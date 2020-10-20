@@ -1,4 +1,5 @@
 from appium import webdriver
+from test_loginclass import Login
 # from time import ctime
 import re
 # import subprocess
@@ -21,16 +22,6 @@ deviceVersion = re.findall(r'^\w*\b', deviceAndroidVersion[0])[0]
 # os.system('adb uninstall ' + "com.zdsoft.newsquirrel")
 
 class msykAppTest(unittest.TestCase):
-    # def appiumserver_start(host, port):
-    #     """启动appium server"""
-    #     cmd = 'start /b appium -a ' + str(host) + ' -p ' + str(port) + ' -bp ' + str(str(port + 1))
-    #     print('%s at %s' % (cmd, ctime()))
-    #     subprocess.Popen(cmd, shell=True, stdout=open('../test_case/' + str(port) + '.log', 'a'), stderr=subprocess.STDOUT)
-    #
-    # if __name__ == '__main__':
-    #     host = '127.0.0.1'
-    #     port = 4723
-    #     appiumserver_start(host, port)
 
     def setUp(self):
         desired_caps = {
@@ -45,14 +36,20 @@ class msykAppTest(unittest.TestCase):
             'unicodeKeyboard': True,
             'resetKeyboard': True,
             'noReset': True
-            ''
         }
         self.driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
+        self.driver.implicitly_wait(10)
+        # Login(self.driver).login("nls_1", "Msyk_123")
+
+    def test_stuHomework(self):
+        self.driver.find_element_by_xpath("//*[@text='去完成作业']").click()
+        self.driver.find_element_by_xpath("//*[@text='【预习】自动化测试1']").click()
+        self.driver.find_element_by_xpath("//*[@text='A.']").click()
+        print("123")
 
     def tearDown(self):
         self.driver.quit()
 
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(msykAppTest)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()
