@@ -9,7 +9,7 @@ import os
 import random
 
 # 测试的包的路径和包名
-appLocation = r"D:\appium_test_apk\Squirrel-V5.9.1.0-20200918-120961.apk"
+appLocation = r"E:\Edge_Download\Squirrel-V5.9.1.1-20200921-120980.apk"
 # 读取设备 id
 readDeviceId = list(os.popen('adb devices').readlines())
 # 正则表达式匹配出 id 信息
@@ -48,6 +48,9 @@ class msykAppTest(unittest.TestCase):
             return True
         else:
             return False
+
+    def test_teaHomework(self):
+        self.driver.find_element_by_xpath("//android.widget.RadioGroup/android.widget.LinearLayout[2]/android.widget.LinearLayout[4]").click()
 
     def test_stuHomework(self):
         self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/nav_btn_2").click()
@@ -96,6 +99,7 @@ class msykAppTest(unittest.TestCase):
                 time.sleep(5)
                 self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/start_icon").click()
                 self.driver.find_element_by_xpath("//*[@text='上传录音']").click()
+                self.driver.find_element_by_class_name("android.widget.Button").click()
 
                 i = i + 1
             else:
