@@ -1,4 +1,6 @@
 from appium import webdriver
+from appium.webdriver.common.touch_action import TouchAction
+from appium.webdriver.common.multi_action import MultiAction
 # from test_loginclass import Login
 # from time import ctime
 import re
@@ -9,7 +11,7 @@ import os
 import random
 
 # 测试的包的路径和包名
-appLocation = r"E:\Edge_Download\Squirrel-V5.9.1.1-20200921-120980.apk"
+appLocation = r"D:\appium_test_apk\Squirrel-V5.9.1.0-20200918-120961.apk"
 # 读取设备 id
 readDeviceId = list(os.popen('adb devices').readlines())
 # 正则表达式匹配出 id 信息
@@ -50,7 +52,24 @@ class msykAppTest(unittest.TestCase):
             return False
 
     def test_teaHomework(self):
-        self.driver.find_element_by_xpath("//android.widget.RadioGroup/android.widget.LinearLayout[2]/android.widget.LinearLayout[4]").click()
+        self.driver.find_element_by_xpath("//*[@text='作业']").click()
+        self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/add_homework_layout").click()
+        self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/name_edit").send_keys("自动化作业")
+        self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/tv_homeWork_end_time").click()
+        year = self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/picker_year")
+        hour = self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/picker_hour")
+        minute = self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/picker_minute")
+        sure = self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/tv_pick_sure")
+        a1 = TouchAction(self.driver)
+        a2 = TouchAction(self.driver)
+        a3 = TouchAction(self.driver)
+        a4 = MultiAction(self.driver)
+        a1.press(year).move_to(sure).release()
+        a2.press(hour).move_to(sure).release()
+        a3.press(minute).move_to(sure).release()
+        a4.add(a1, a2, a3)
+        a4.perform()
+        # self.driver.swipe(1300, 760, 1300, 470, 1000)
 
     def test_stuHomework(self):
         self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/nav_btn_2").click()
