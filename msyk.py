@@ -9,9 +9,10 @@ import time
 import unittest
 import os
 import random
+import threading
 
 # 测试的包的路径和包名
-appLocation = r"D:\appium_test_apk\Squirrel-V5.9.1.0-20200918-120961.apk"
+appLocation = r"D:\appium_test_apk\Squirrel-V5.9.6-20201110-121858.apk"
 # 读取设备 id
 readDeviceId = list(os.popen('adb devices').readlines())
 # 正则表达式匹配出 id 信息
@@ -20,6 +21,11 @@ deviceId = re.findall(r'^\w*\b', readDeviceId[1])[0]
 deviceAndroidVersion = list(os.popen('adb shell getprop ro.build.version.release').readlines())
 deviceVersion = re.findall(r'^\w*\b', deviceAndroidVersion[0])[0]
 
+cond = threading.Condition()
+# cond.acquire()
+# cond.release()
+# cond.wait()
+# cond.notify()
 
 class msykAppTest(unittest.TestCase):
     def setUp(self):
@@ -51,6 +57,27 @@ class msykAppTest(unittest.TestCase):
         else:
             return False
 
+    def test_teaPercenter(self):
+        self.driver.find_element_by_class_name("com.zdsoft.newsquirrel:id/teacher_main_user_line").click()
+        self.driver.find_element_by_xpath("//*[@text='修改密码']").click()
+        self.driver.find_element_by_xpath("//*[@text='旧密码']").send_keys("Msyk_741")
+        self.driver.find_element_by_xpath("//*[contains(@text, '新密码')]").send_keys("12345678")
+        self.driver.find_element_by_xpath("//*[@text='确认密码']").send_keys("12345678")
+        self.driver.find_element_by_xpath("//*[@text='确认修改']").click()
+        self.driver.find_element_by_xpath("//*[@text='清空缓存']").click()
+        if self.is_element_exist("0.00KB"):
+            print("缓存清理成功")
+        else:
+            print("缓存清理失败，再清理一次")
+            self.driver.find_element_by_xpath("//*[@text='清空缓存']").click()
+            if self.is_element_exist("0.00KB"):
+                print("缓存清理成功")
+        self.driver.find_element_by_xpath("//*[@text='清理文件']").click()
+        self.driver.find_element_by_xpath("//*[@text='确定']").click()
+        self.driver.find_element_by_xpath("//*[@text='关于美师优课']").click()
+        self.driver.find_element_by_xpath("//*[contains(@text, '用户服务协议')]").click()
+        self.driver.find_element_by_xpath("//*[@text='我知道了']").click()
+
     def test_teaHomework(self):
         self.driver.find_element_by_xpath("//*[@text='作业']").click()
         self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/add_homework_layout").click()
@@ -72,6 +99,22 @@ class msykAppTest(unittest.TestCase):
         self.driver.find_element_by_xpath("//*[@text='创建并下一步']").click()
         self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/teacher_homework_my_material").click()
 
+    def test_teaMaterial(self):
+        self.driver.find_element_by_xpath("//*[@text='素材库']").click()
+        # 上传素材
+        self.driver.find_element_by_xpath("//*[@text='素材上传']").click()
+        self.driver.find_element_by_xpath("//*[@text='题库上传']").click()
+        self.driver.find_element_by_xpath("//*[@text='PPT上传']").click()
+        self.driver.find_element_by_xpath("//*[@text='新建文件夹']").click()
+
+    def test_teaCourseware(self):
+        self.driver.find_element_by_xpath("//*[@text='备课']").click()
+        self.driver.find_element_by_xpath("//*[@text='新建教学设计']").click()
+
+    def test_teaClassrecord(self):
+        self.driver.find_element_by_xpath("//*[@text='课堂']").click()
+        self.driver.find_element_by_class_name("com.zdsoft.newsquirrel:id/iv_more").click()
+        self.driver.find_element_by_xpath("//*[@text='历史课堂']").click()
 
     def test_stuHomework(self):
         self.driver.find_element_by_id("com.zdsoft.newsquirrel:id/nav_btn_2").click()
@@ -129,6 +172,39 @@ class msykAppTest(unittest.TestCase):
                 "//androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout[{}]".format(i)).click()
         print("完成")
         # questiontypes = ["//*[@text='单选题']", "//*[@text='阅读理解']", "//*[@text='解答题']", ]
+
+    def test_stuPercenter(self):
+        self.driver.find_element_by_xpath("//*[@text='进入个人中心']").click()
+        self.driver.find_element_by_xpath("//*[@text='个人信息']").click()
+        self.driver.find_element_by_class_name('com.zdsoft.newsquirrel:id/back_title').click()
+        self.driver.find_element_by_class_name('com.zdsoft.newsquirrel:id/iv_eye_control').click()
+        self.driver.find_element_by_class_name('com.zdsoft.newsquirrel:id/iv_eye_control').click()
+        self.driver.find_element_by_xpath("//*[@text='修改密码']").click()
+        self.driver.find_element_by_xpath("//*[@text='旧密码']").send_keys("12345678")
+        self.driver.find_element_by_xpath("//*[contains(@text, '新密码，')]").send_keys("123456789")
+        self.driver.find_element_by_xpath("//*[@text='确认新密码']").send_keys("123456789")
+        self.driver.find_element_by_class_name('com.zdsoft.newsquirrel:id/st_change_confirm').click()
+        self.driver.find_element_by_xpath("//*[@text='清空缓存']").click()
+        if self.is_element_exist("0.00KB"):
+            print("缓存清理成功")
+        else:
+            print("缓存清理失败，再清理一次")
+            self.driver.find_element_by_xpath("//*[@text='清空缓存']").click()
+            if self.is_element_exist("0.00KB"):
+                print("缓存清理成功")
+        self.driver.find_element_by_xpath("//*[@text='关于平台']").click()
+        self.driver.find_element_by_xpath("//*[contains(@text, '用户服务协议')]").click()
+        self.driver.find_element_by_xpath("//*[@text='我知道了']").click()
+        self.driver.find_element_by_class_name('com.zdsoft.newsquirrel:id/close_btn').click()
+        # self.driver.find_element_by_class_name('com.zdsoft.newsquirrel:id/student_exit_bt').click()   # 退出登录
+        self.driver.find_element_by_class_name('com.zdsoft.newsquirrel:id/back_title').click()
+
+    def test_stuClassrecord(self):
+        self.driver.find_element_by_class_name('com.zdsoft.newsquirrel:id/nav_btn_5').click()
+        self.driver.find_element_by_xpath("//*[contains(@text, '历史课堂')]").click()
+
+    def test_stuClassroom(self):
+        self.driver.find_element_by_class_name('com.zdsoft.newsquirrel:id/nav_btn_5').click()
 
     def tearDown(self):
         self.driver.quit()
